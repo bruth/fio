@@ -19,7 +19,7 @@ form fields more consistent with proper type coercion and validation.
 
 ```html
 <script src="require.js"></script>
-<script>require(['inputio'], function() { ... })</script>
+<script>require(['inputio'], function(inputio) { ... })</script>
 ```
 
 #### Traditional
@@ -29,15 +29,21 @@ form fields more consistent with proper type coercion and validation.
 <script src="inputio.js"></script>
 ```
 
-### Functions
+### API
 
+#### inputio.getInputValue(selector)
 
-`getInputValue(selector)` - Gets the input value given the selector.
+Gets the input value given the selector.
 
-`setInputValue(selector, value)` - Sets the input value for the selector.
+#### inputio.setInputValue(selector, value)
 
-`coerceValue(value, type)` - Coerces some value for the given type. This is
-generally performed after `getInputValue` is used.
+Sets the input value for the selector.
 
-`validateValue(value, type)` - Validates a value is of the given type. Returns
-a boolean denoting the result.
+#### inputio.coerceValue(value, type)
+
+Coerces some value for the given type. This is generally performed after
+`getInputValue` is used.
+
+#### inputio.validateValue(value, type)
+
+Validates a value is of the given type. Returns a boolean denoting the result.
