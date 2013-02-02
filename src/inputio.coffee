@@ -2,16 +2,18 @@
     if typeof define is 'function' and define.amd
         # AMD
         define ['jquery'], (jQuery) ->
-            factory(jQuery)
+            root.InputIO = factory(jQuery)
     else
         # Browser globals
-        root.inputio = factory(root.jQuery)
+        root.InputIO= factory(root.jQuery)
 ) @, (jQuery) ->
 
     # Simple test to check if date.js is installed
-    dateJSInstalled = Boolean(Date.CultureInfo)
+    dateJSInstalled = Date.CultureInfo?
 
-    getInputValue = (selector) ->
+    getType = ($el) -> $el.attr('type') or $el.data('type')
+
+    get = (selector) ->
         multi = false
 
         # Remove disabled fields from the set
@@ -29,15 +31,19 @@
         # Multi-selects are handled by jQuery
         if $el.is 'select[multiple]'
             multi = true
-            value = $el.val()
+            value = coerce($el.val(), getType($el))
         # Get values with multiple elements in the set. It is assumed
         # the selector is targeted to a group of elements representing
         # one or more values such as range query.
         else if multi or $el.length > 1
             multi = true
-            value = ($(e).val() for e in $el)
+
+            value = []
+            for e in $el
+                $e = $(e)
+                value.push(coerce($e.val(), getType($e)))
         else
-            value = $el.val()
+            value = coerce($el.val(), getType($el))
 
         # Handle empty values
         if not value? or value is ''
@@ -45,7 +51,7 @@
         return value
 
 
-    setInputValue = (selector, value) ->
+    set = (selector, value) ->
         multi = false
 
         $el = $(selector)
@@ -73,35 +79,42 @@
         $el.val value
         return
 
+    coerceDate = (v) ->
+        if not dateJSInstalled
+            throw new Error('date.js must be installed to properly dates')
+        Date.parse v
+
+    coercers =
+        boolean: (v) -> Boolean v
+        number: (v) -> parseFloat v
+        string: (v) -> v.toString()
+        date: coerceDate
+        datetime: coerceDate
+        time: coerceDate
 
     # Attempts to coerce some 'raw' value into the specified type
     # otherwise undefined is return.
-    coerceValue = (value, type) ->
+    coerce = (value, type) ->
         if not value? or value is '' then return null
+
         if $.isArray value
             cleaned = []
             for x in value
-                if (x = coerceValue x, type) then cleaned.push x
+                if (x = coerce x, type) then cleaned.push x
             if cleaned.length then cleaned else null
         else
-            switch type
-                when 'boolean' then Boolean value
-                when 'number' then parseFloat value
-                when 'string' then value.toString()
-                when 'date', 'datetime', 'time'
-                    if not dateJSInstalled
-                        throw new Error('date.js must be installed to properly dates')
-                    Date.parse value
+            if coercers[type]? then coercers[type](value) else value
 
+    checkers =
+        boolean: (v) -> $.type(v) is 'boolean'
+        number: (v) -> $.type(v) is 'number'
+        string: (v) -> $.type(v) is 'string'
+        date: (v) -> $.type(v) is 'date'
+        datetime: (v) -> $.type(v) is 'date'
+        time: (v) -> $.type(v) is 'date'
 
     # Validates the value is of the specified type
-    validateValue = (value, type) ->
-        switch type
-            when 'boolean', 'number', 'string'
-                $.type(value) is type
-            when 'date', 'datetime', 'time'
-                $.type(value) is 'date'
-            else false
+    check = (value, type) ->
+        if checkers[type]? then checkers[type](value) else true
 
-
-    { getInputValue, setInputValue, coerceValue, validateValue }
+    { get , set, coerce, coercers, check, checkers }

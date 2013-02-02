@@ -1,13 +1,13 @@
 define [
-    'inputio'
-], (inputio) ->
+    'InputIO'
+], (InputIO) ->
 
     QUnit.start()
 
-    coerceValue = inputio.coerceValue
-    validateValue = inputio.validateValue
-    getInputValue = inputio.getInputValue
-    setInputValue = inputio.setInputValue
+    coerce = InputIO.coerce
+    check = InputIO.check
+    get = InputIO.get
+    set = InputIO.set
 
     test 'coerce values', ->
 
@@ -15,40 +15,40 @@ define [
             'datetime', 'time']
 
         for type in types
-            equal coerceValue(null, type), null
-            equal coerceValue(undefined, type), null
-            equal coerceValue('', type), null
+            equal coerce(null, type), null
+            equal coerce(undefined, type), null
+            equal coerce('', type), null
 
-        equal coerceValue('8', 'number'), 8
-        equal coerceValue('8.0', 'number'), 8.0
-        deepEqual coerceValue(['1', '2'], 'number'), [1, 2]
-        deepEqual coerceValue(NaN, 'number'), NaN
-        deepEqual coerceValue('foo', 'number'), NaN
-        deepEqual coerceValue(true, 'number'), NaN
-        deepEqual coerceValue(false, 'number'), NaN
+        equal coerce('8', 'number'), 8
+        equal coerce('8.0', 'number'), 8.0
+        deepEqual coerce(['1', '2'], 'number'), [1, 2]
+        deepEqual coerce(NaN, 'number'), NaN
+        deepEqual coerce('foo', 'number'), NaN
+        deepEqual coerce(true, 'number'), NaN
+        deepEqual coerce(false, 'number'), NaN
 
-        equal coerceValue(8, 'string'), '8'
-        equal coerceValue(8.0, 'string'), '8'      # WTF?!
-        equal coerceValue(8.1, 'string'), '8.1'
-        equal coerceValue(true, 'string'), 'true'
-        equal coerceValue(false, 'string'), 'false'
+        equal coerce(8, 'string'), '8'
+        equal coerce(8.0, 'string'), '8'      # WTF?!
+        equal coerce(8.1, 'string'), '8.1'
+        equal coerce(true, 'string'), 'true'
+        equal coerce(false, 'string'), 'false'
 
-        equal coerceValue('true', 'boolean'), true
-        equal coerceValue('foo', 'boolean'), true
+        equal coerce('true', 'boolean'), true
+        equal coerce('foo', 'boolean'), true
 
         # Months are 0-based, thus the 9 here.. it actually means October
-        deepEqual coerceValue('Oct 12, 2013', 'date'), new Date(2013, 9, 12)
-        deepEqual coerceValue('...', 'date'), null
-        deepEqual coerceValue('foobar', 'date'), null
-        deepEqual coerceValue('2012-10-14 3:40 pm', 'time'), new Date(2012, 9, 14, 15, 40, 0)
+        deepEqual coerce('Oct 12, 2013', 'date'), new Date(2013, 9, 12)
+        deepEqual coerce('...', 'date'), null
+        deepEqual coerce('foobar', 'date'), null
+        deepEqual coerce('2012-10-14 3:40 pm', 'time'), new Date(2012, 9, 14, 15, 40, 0)
 
 
     test 'validate value', ->
-        equal validateValue(null, 'number'), false
-        equal validateValue(null, 'string'), false
-        equal validateValue(null, 'date'), false
-        equal validateValue(null, 'time'), false
-        equal validateValue(null, 'datetime'), false
+        equal check(null, 'number'), false
+        equal check(null, 'string'), false
+        equal check(null, 'date'), false
+        equal check(null, 'time'), false
+        equal check(null, 'datetime'), false
 
 
     test 'set/get values - multi', ->
@@ -80,13 +80,13 @@ define [
 
         # checkbox group
         for i in [0..setMulti.length-1]
-            setInputValue $('[name=cbox1]'), setMulti[i]
-            deepEqual getInputValue($('[name=cbox1]')), getMulti[i]
+            set $('[name=cbox1]'), setMulti[i]
+            deepEqual get($('[name=cbox1]')), getMulti[i]
 
         # multi-select
         for i in [0..setMulti.length-1]
-            setInputValue $('[name=select-multi]'), setMulti[i]
-            deepEqual getInputValue($('[name=select-multi]')), getMulti[i]
+            set $('[name=select-multi]'), setMulti[i]
+            deepEqual get($('[name=select-multi]')), getMulti[i]
 
 
     test 'set/get values - single', ->
@@ -115,40 +115,40 @@ define [
 
         # radio
         for i in [0..setSingle.length-1]
-            setInputValue $('[name=rad1]'), setSingle[i]
-            deepEqual getInputValue($('[name=rad1]')), getSingle[i]
+            set $('[name=rad1]'), setSingle[i]
+            deepEqual get($('[name=rad1]')), getSingle[i]
 
         # single select
         for i in [0..setSingle.length-1]
-            setInputValue $('[name=select]'), setSingle[i]
-            deepEqual getInputValue($('[name=select]')), getSingle[i]
+            set $('[name=select]'), setSingle[i]
+            deepEqual get($('[name=select]')), getSingle[i]
 
 
     test 'set/get single checkbox', ->
-        setInputValue $('[name=cbox2]'), 'foo'
-        deepEqual getInputValue($('[name=cbox2]')), 'foo'
+        set $('[name=cbox2]'), 'foo'
+        deepEqual get($('[name=cbox2]')), 'foo'
 
-        setInputValue $('[name=cbox2]'), ''
-        deepEqual getInputValue($('[name=cbox2]')), null
+        set $('[name=cbox2]'), ''
+        deepEqual get($('[name=cbox2]')), null
 
-        setInputValue $('[name=cbox2]'), 'unknown'
-        deepEqual getInputValue($('[name=cbox2]')), null
+        set $('[name=cbox2]'), 'unknown'
+        deepEqual get($('[name=cbox2]')), null
 
-        setInputValue $('[name=cbox2]'), ['foo']
-        deepEqual getInputValue($('[name=cbox2]')), 'foo'
+        set $('[name=cbox2]'), ['foo']
+        deepEqual get($('[name=cbox2]')), 'foo'
 
     test 'set/get multi text', ->
-        deepEqual getInputValue($('[name=range1]')), ['1', '2']
+        deepEqual get($('[name=range1]')), ['1', '2']
 
-        setInputValue $('[name=range1]'), [3, 5]
-        deepEqual getInputValue($('[name=range1]')), ['3', '5']
+        set $('[name=range1]'), [3, 5]
+        deepEqual get($('[name=range1]')), ['3', '5']
 
-        setInputValue $('[name=range1]'), 4
-        deepEqual getInputValue($('[name=range1]')), ['4', '5']
+        set $('[name=range1]'), 4
+        deepEqual get($('[name=range1]')), ['4', '5']
 
-        setInputValue $('[name=range1]'), [9, 8, 7]
-        deepEqual getInputValue($('[name=range1]')), ['9', '8']
+        set $('[name=range1]'), [9, 8, 7]
+        deepEqual get($('[name=range1]')), ['9', '8']
 
-        deepEqual getInputValue($('[name=range2]')), '1'
-        setInputValue $('[name=range2]'), [5, 6]
-        deepEqual getInputValue($('[name=range2]')), '5'
+        deepEqual get($('[name=range2]')), '1'
+        set $('[name=range2]'), [5, 6]
+        deepEqual get($('[name=range2]')), '5'

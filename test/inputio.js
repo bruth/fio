@@ -3,16 +3,19 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     return define(['jquery'], function(jQuery) {
-      return factory(jQuery);
+      return root.InputIO = factory(jQuery);
     });
   } else {
-    return root.inputio = factory(root.jQuery);
+    return root.InputIO = factory(root.jQuery);
   }
 })(this, function(jQuery) {
-  var coerceValue, dateJSInstalled, getInputValue, setInputValue, validateValue;
-  dateJSInstalled = Boolean(Date.CultureInfo);
-  getInputValue = function(selector) {
-    var $el, e, multi, value;
+  var check, checkers, coerce, coerceDate, coercers, dateJSInstalled, get, getType, set;
+  dateJSInstalled = Date.CultureInfo != null;
+  getType = function($el) {
+    return $el.attr('type') || $el.data('type');
+  };
+  get = function(selector) {
+    var $e, $el, e, multi, value, _i, _len;
     multi = false;
     $el = $(selector).not(':disabled');
     if ($el.is('input[type=checkbox]') && $el.length > 1) {
@@ -23,27 +26,24 @@
     }
     if ($el.is('select[multiple]')) {
       multi = true;
-      value = $el.val();
+      value = coerce($el.val(), getType($el));
     } else if (multi || $el.length > 1) {
       multi = true;
-      value = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = $el.length; _i < _len; _i++) {
-          e = $el[_i];
-          _results.push($(e).val());
-        }
-        return _results;
-      })();
+      value = [];
+      for (_i = 0, _len = $el.length; _i < _len; _i++) {
+        e = $el[_i];
+        $e = $(e);
+        value.push(coerce($e.val(), getType($e)));
+      }
     } else {
-      value = $el.val();
+      value = coerce($el.val(), getType($el));
     }
     if (!(value != null) || value === '') {
       value = multi ? [] : null;
     }
     return value;
   };
-  setInputValue = function(selector, value) {
+  set = function(selector, value) {
     var $el, i, multi, x, _i, _len;
     multi = false;
     $el = $(selector);
@@ -67,7 +67,27 @@
     }
     $el.val(value);
   };
-  coerceValue = function(value, type) {
+  coerceDate = function(v) {
+    if (!dateJSInstalled) {
+      throw new Error('date.js must be installed to properly dates');
+    }
+    return Date.parse(v);
+  };
+  coercers = {
+    boolean: function(v) {
+      return Boolean(v);
+    },
+    number: function(v) {
+      return parseFloat(v);
+    },
+    string: function(v) {
+      return v.toString();
+    },
+    date: coerceDate,
+    datetime: coerceDate,
+    time: coerceDate
+  };
+  coerce = function(value, type) {
     var cleaned, x, _i, _len;
     if (!(value != null) || value === '') {
       return null;
@@ -76,7 +96,7 @@
       cleaned = [];
       for (_i = 0, _len = value.length; _i < _len; _i++) {
         x = value[_i];
-        if ((x = coerceValue(x, type))) {
+        if ((x = coerce(x, type))) {
           cleaned.push(x);
         }
       }
@@ -86,41 +106,46 @@
         return null;
       }
     } else {
-      switch (type) {
-        case 'boolean':
-          return Boolean(value);
-        case 'number':
-          return parseFloat(value);
-        case 'string':
-          return value.toString();
-        case 'date':
-        case 'datetime':
-        case 'time':
-          if (!dateJSInstalled) {
-            throw new Error('date.js must be installed to properly dates');
-          }
-          return Date.parse(value);
+      if (coercers[type] != null) {
+        return coercers[type](value);
+      } else {
+        return value;
       }
     }
   };
-  validateValue = function(value, type) {
-    switch (type) {
-      case 'boolean':
-      case 'number':
-      case 'string':
-        return $.type(value) === type;
-      case 'date':
-      case 'datetime':
-      case 'time':
-        return $.type(value) === 'date';
-      default:
-        return false;
+  checkers = {
+    boolean: function(v) {
+      return $.type(v) === 'boolean';
+    },
+    number: function(v) {
+      return $.type(v) === 'number';
+    },
+    string: function(v) {
+      return $.type(v) === 'string';
+    },
+    date: function(v) {
+      return $.type(v) === 'date';
+    },
+    datetime: function(v) {
+      return $.type(v) === 'date';
+    },
+    time: function(v) {
+      return $.type(v) === 'date';
+    }
+  };
+  check = function(value, type) {
+    if (checkers[type] != null) {
+      return checkers[type](value);
+    } else {
+      return true;
     }
   };
   return {
-    getInputValue: getInputValue,
-    setInputValue: setInputValue,
-    coerceValue: coerceValue,
-    validateValue: validateValue
+    get: get,
+    set: set,
+    coerce: coerce,
+    coercers: coercers,
+    check: check,
+    checkers: checkers
   };
 });
