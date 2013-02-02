@@ -9,10 +9,26 @@
     return root.InputIO = factory(root.jQuery);
   }
 })(this, function(jQuery) {
-  var check, checkers, coerce, coerceDate, coercers, dateJSInstalled, get, getType, set;
+  var check, checkers, coerce, coerceDate, coercers, dateJSInstalled, get, getType, isArray, isBoolean, isDate, isNaN, isNumber, isString, set;
+  isArray = $.isArray;
+  isNumber = function(obj) {
+    return $.type(obj) === 'number';
+  };
+  isNaN = function(obj) {
+    return isNumber(obj) && obj !== +obj;
+  };
+  isBoolean = function(obj) {
+    return $.type(obj) === 'boolean';
+  };
+  isString = function(obj) {
+    return $.type(obj) === 'string';
+  };
+  isDate = function(obj) {
+    return $.type(obj) === 'date';
+  };
   dateJSInstalled = Date.CultureInfo != null;
   getType = function($el) {
-    return $el.attr('type') || $el.data('type');
+    return $el.attr('data-type') || $el.attr('type');
   };
   get = function(selector) {
     var $e, $el, e, multi, value, _i, _len;
@@ -51,7 +67,7 @@
       multi = true;
     }
     if (!multi && $el.length > 1) {
-      if (!$.isArray(value)) {
+      if (!isArray(value)) {
         value = [value];
       }
       for (i = _i = 0, _len = value.length; _i < _len; i = ++_i) {
@@ -60,9 +76,9 @@
       }
       return;
     }
-    if (multi && !$.isArray(value)) {
+    if (multi && !isArray(value)) {
       value = [value];
-    } else if (!multi && $.isArray(value)) {
+    } else if (!multi && isArray(value)) {
       value = value[0];
     }
     $el.val(value);
@@ -88,50 +104,37 @@
     time: coerceDate
   };
   coerce = function(value, type) {
-    var cleaned, x, _i, _len;
-    if (!(value != null) || value === '') {
+    var cleaned, x;
+    if (!(value != null)) {
       return null;
     }
-    if ($.isArray(value)) {
-      cleaned = [];
-      for (_i = 0, _len = value.length; _i < _len; _i++) {
-        x = value[_i];
-        if ((x = coerce(x, type))) {
-          cleaned.push(x);
+    if (isArray(value)) {
+      cleaned = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = value.length; _i < _len; _i++) {
+          x = value[_i];
+          _results.push(coerce(x, type));
         }
-      }
-      if (cleaned.length) {
-        return cleaned;
-      } else {
-        return null;
-      }
+        return _results;
+      })();
+      value = cleaned.length ? cleaned : null;
+    } else if (coercers[type] != null) {
+      value = coercers[type](value);
+    }
+    if (value === '' || isNaN(value)) {
+      return null;
     } else {
-      if (coercers[type] != null) {
-        return coercers[type](value);
-      } else {
-        return value;
-      }
+      return value;
     }
   };
   checkers = {
-    boolean: function(v) {
-      return $.type(v) === 'boolean';
-    },
-    number: function(v) {
-      return $.type(v) === 'number';
-    },
-    string: function(v) {
-      return $.type(v) === 'string';
-    },
-    date: function(v) {
-      return $.type(v) === 'date';
-    },
-    datetime: function(v) {
-      return $.type(v) === 'date';
-    },
-    time: function(v) {
-      return $.type(v) === 'date';
-    }
+    boolean: isBoolean,
+    number: isNumber,
+    string: isString,
+    date: isDate,
+    datetime: isDate,
+    time: isDate
   };
   check = function(value, type) {
     if (checkers[type] != null) {

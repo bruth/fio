@@ -9,7 +9,7 @@ It follows these conventions:
 - Only checkboxes and radio buttons that _checked_ are returned
 - Selectors pointing to inputs will be treated as a multi-value fields and will return an array on get (as well as expect an array when set). This of course excludes radio buttons due to the constraint mentioned above.
 - Checkbox and radio buttons are set via their value
-- Values are coerced based on their `type` attribute if one exists and falls back to an attempted coercion based on the contents of the value
+- Values are coerced based on the `data-type` attribute if one is present and falls back to the `type` attribute
 - Empty values are coerced to `null`
 
 ### Requirements

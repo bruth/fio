@@ -14,15 +14,19 @@ define(['InputIO'], function(InputIO) {
       type = types[_i];
       equal(coerce(null, type), null);
       equal(coerce(void 0, type), null);
-      equal(coerce('', type), null);
+      if (type === 'boolean') {
+        equal(coerce('', type), false);
+      } else {
+        equal(coerce('', type), null);
+      }
     }
     equal(coerce('8', 'number'), 8);
     equal(coerce('8.0', 'number'), 8.0);
     deepEqual(coerce(['1', '2'], 'number'), [1, 2]);
-    deepEqual(coerce(NaN, 'number'), NaN);
-    deepEqual(coerce('foo', 'number'), NaN);
-    deepEqual(coerce(true, 'number'), NaN);
-    deepEqual(coerce(false, 'number'), NaN);
+    deepEqual(coerce(NaN, 'number'), null);
+    deepEqual(coerce('foo', 'number'), null);
+    deepEqual(coerce(true, 'number'), null);
+    deepEqual(coerce(false, 'number'), null);
     equal(coerce(8, 'string'), '8');
     equal(coerce(8.0, 'string'), '8');
     equal(coerce(8.1, 'string'), '8.1');
@@ -34,6 +38,12 @@ define(['InputIO'], function(InputIO) {
     deepEqual(coerce('...', 'date'), null);
     deepEqual(coerce('foobar', 'date'), null);
     return deepEqual(coerce('2012-10-14 3:40 pm', 'time'), new Date(2012, 9, 14, 15, 40, 0));
+  });
+  test('type attrs', function() {
+    equal(get('[name=type1]'), 3.3);
+    equal(get('[name=type2]'), true);
+    equal(get('[name=type3]'), false);
+    return deepEqual(get('[name=type4]'), new Date(2013, 2, 2));
   });
   test('validate value', function() {
     equal(check(null, 'number'), false);
