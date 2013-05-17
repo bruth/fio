@@ -1,12 +1,12 @@
 # fio
 
-"fio" (form IO) is a set of utilities for getting/setting data in HTML input and select form fields more consistently type coercion and validation.
+"fio" (form IO) is a utility for getting/setting data in input and select form fields by following a set of semantics.
 
-It follows these conventions:
+It follows these semantics:
 
-- Disabled fields are ignored when getting values, but will be set if a value exists for it
-- Only checkboxes and radio buttons that _checked_ are returned
-- Selectors pointing to inputs will be treated as a multi-value fields and will return an array on get (as well as expect an array when set). This of course excludes radio buttons due to the constraint mentioned above.
+- Disabled fields are ignored when getting values, but values will be set if one is available
+- Only checkboxes and radio buttons that are _checked_ are returned
+- Selectors pointing to multiple inputs will be treated as a multi-value fields and will return an array on get (as well as expect an array when set). This of course excludes radio buttons due to the constraint mentioned above.
 - Checkbox and radio buttons are set via their value
 - Values are coerced based on the `data-type` attribute if one is present and falls back to the `type` attribute
 - Empty values are coerced to `null`
