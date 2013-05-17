@@ -8,14 +8,14 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-    <title>Fio by bruth</title>
+    <title>fio by bruth</title>
   </head>
 
   <body>
 
     <header>
       <div class="container">
-        <h1>Fio</h1>
+        <h1>fio</h1>
         <h2></h2>
 
         <section id="downloads">
@@ -28,14 +28,14 @@
 
     <div class="container">
       <section id="main_content">
-        <p>"fio" (form IO) is a utility for getting/setting data in HTML input and select form fields more consistently type coercion and validation.</p>
+        <p>"fio" (form IO) is a utility for getting/setting data in input and select form fields by following a set of semantics.</p>
 
-<p>It follows these conventions:</p>
+<p>It follows these semantics:</p>
 
 <ul>
-<li>Disabled fields are ignored when getting values, but will be set if a value exists for it</li>
-<li>Only checkboxes and radio buttons that <em>checked</em> are returned</li>
-<li>Selectors pointing to inputs will be treated as a multi-value fields and will return an array on get (as well as expect an array when set). This of course excludes radio buttons due to the constraint mentioned above.</li>
+<li>Disabled fields are ignored when getting values, but values will be set if one is available</li>
+<li>Only checkboxes and radio buttons that are <em>checked</em> are returned</li>
+<li>Selectors pointing to multiple inputs will be treated as a multi-value fields and will return an array on get (as well as expect an array when set). This of course excludes radio buttons due to the constraint mentioned above.</li>
 <li>Checkbox and radio buttons are set via their value</li>
 <li>Values are coerced based on the <code>data-type</code> attribute if one is present and falls back to the <code>type</code> attribute</li>
 <li>Empty values are coerced to <code>null</code>
