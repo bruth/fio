@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Fio by bruth</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Fio</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          <a href="https://github.com/bruth/fio/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/bruth/fio/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/bruth/fio" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>"fio" (form IO) is a utility for getting/setting data in HTML input and select form fields more consistently type coercion and validation.</p>
+
+<p>It follows these conventions:</p>
+
+<ul>
+<li>Disabled fields are ignored when getting values, but will be set if a value exists for it</li>
+<li>Only checkboxes and radio buttons that <em>checked</em> are returned</li>
+<li>Selectors pointing to inputs will be treated as a multi-value fields and will return an array on get (as well as expect an array when set). This of course excludes radio buttons due to the constraint mentioned above.</li>
+<li>Checkbox and radio buttons are set via their value</li>
+<li>Values are coerced based on the <code>data-type</code> attribute if one is present and falls back to the <code>type</code> attribute</li>
+<li>Empty values are coerced to <code>null</code>
+</li>
+</ul><h3>Requirements</h3>
+
+<ul>
+<li><a href="http://jquery.com">jQuery</a></li>
+<li>
+<a href="http://www.datejs.com/">Datejs</a> (only if you are doing date parsing)</li>
+</ul><h3>Download</h3>
+
+<ul>
+<li><a href="https://raw.github.com/bruth/fio/master/build/fio.js">Uncompressed</a></li>
+<li><a href="https://raw.github.com/bruth/fio/master/dist/fio.js">Compressed</a></li>
+</ul><h3>Install</h3>
+
+<h4>AMD</h4>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"require.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span><span class="nx">require</span><span class="p">([</span><span class="s1">'fio'</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fio</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">})</span><span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+<h4>Traditional</h4>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"jquery.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"fio.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+<h3>API</h3>
+
+<h4>fio.get(selector)</h4>
+
+<p>Gets the input value given the selector.</p>
+
+<h4>fio.set(selector, value)</h4>
+
+<p>Sets the input value for the selector.</p>
+
+<h4>fio.coerce(value, type)</h4>
+
+<p>Coerces some value for the given type. This is generally performed after
+<code>getInputValue</code> is used.</p>
+
+<h4>fio.check(value, type)</h4>
+
+<p>Validates a value is of the given type. Returns a boolean denoting the result.</p>
+
+<h3>Examples</h3>
+
+<h4>Checkboxes:</h4>
+
+<div class="highlight"><pre><span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">checkbox</span> <span class="na">name=</span><span class="s">cbox1</span> <span class="na">value=</span><span class="s">foo</span> <span class="na">checked</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">checkbox</span> <span class="na">name=</span><span class="s">cbox1</span> <span class="na">value=</span><span class="s">bar</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">checkbox</span> <span class="na">name=</span><span class="s">cbox1</span> <span class="na">value=</span><span class="s">baz</span> <span class="na">checked</span><span class="nt">&gt;</span>
+</pre></div>
+
+<div class="highlight"><pre><span class="nx">fio</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'[name=cbox1]'</span><span class="p">);</span> <span class="c1">// ['foo', 'baz']</span>
+</pre></div>
+
+<h4>Multiple Inputs</h4>
+
+<div class="highlight"><pre><span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">range1</span> <span class="na">value=</span><span class="s">1</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">range1</span> <span class="na">value=</span><span class="s">2</span><span class="nt">&gt;</span>
+</pre></div>
+
+<div class="highlight"><pre><span class="nx">fio</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'[name=range1]'</span><span class="p">);</span> <span class="c1">// [1, 2]</span>
+</pre></div>
+
+<h4>Disable Input</h4>
+
+<div class="highlight"><pre><span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">range2</span> <span class="na">value=</span><span class="s">1</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">range2</span> <span class="na">value=</span><span class="s">2</span> <span class="na">disabled</span><span class="nt">&gt;</span>
+</pre></div>
+
+<div class="highlight"><pre><span class="nx">fio</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'[name=range2]'</span><span class="p">);</span> <span class="c1">// 1</span>
+</pre></div>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
