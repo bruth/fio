@@ -1,0 +1,23 @@
+{
+  "name": "fio",
+  "version": "0.1.0",
+  "author": "Byron Ruth <b@devel.io>",
+  "description": "Get/set data in form fields with consistent type coercion and validation",
+  "homepage": "http://bruth.github.io/fio/",
+  "license": "BSD",
+  "keywords": ["input", "select", "coercion", "form", "validation"],
+  "repo": "bruth/fio",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bruth/fio.git"
+  },
+  "dependencies": {
+    "jquery": ">=1.5.0"
+  },
+  "main": "dist/fio.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ]
+}

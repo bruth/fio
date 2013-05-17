@@ -1,13 +1,11 @@
-define [
-    'InputIO'
-], (InputIO) ->
+define ['fio'], (fio) ->
 
     QUnit.start()
 
-    coerce = InputIO.coerce
-    check = InputIO.check
-    get = InputIO.get
-    set = InputIO.set
+    coerce = fio.coerce
+    check = fio.check
+    get = fio.get
+    set = fio.set
 
     test 'coerce values', ->
 

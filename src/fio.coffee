@@ -2,10 +2,10 @@
     if typeof define is 'function' and define.amd
         # AMD
         define ['jquery'], (jQuery) ->
-            root.InputIO = factory(jQuery)
+            root.fio = factory(jQuery)
     else
         # Browser globals
-        root.InputIO= factory(root.jQuery)
+        root.fio = factory(root.jQuery)
 ) @, (jQuery) ->
 
     isArray = $.isArray

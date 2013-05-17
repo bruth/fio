@@ -16,5 +16,5 @@
         jquery: 'empty:'
     },
 
-    name: 'inputio'
+    name: 'fio'
 })

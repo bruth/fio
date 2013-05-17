@@ -1,7 +1,6 @@
-# InputIO
+# fio
 
-InputIO is a set of utilities for getting/setting data in HTML input and select
-form fields more consistently type coercion and validation.
+"fio" (form IO) is a set of utilities for getting/setting data in HTML input and select form fields more consistently type coercion and validation.
 
 It follows these conventions:
 
@@ -19,8 +18,8 @@ It follows these conventions:
 
 ### Download
 
-- [Uncompressed](https://raw.github.com/bruth/inputio.js/master/build/inputio.js)
-- [Compressed](https://raw.github.com/bruth/inputio.js/master/dist/inputio.js)
+- [Uncompressed](https://raw.github.com/bruth/fio/master/build/fio.js)
+- [Compressed](https://raw.github.com/bruth/fio/master/dist/fio.js)
 
 ### Install
 
@@ -28,32 +27,32 @@ It follows these conventions:
 
 ```html
 <script src="require.js"></script>
-<script>require(['inputio'], function(InputIO) { ... })</script>
+<script>require(['fio'], function(fio) { ... })</script>
 ```
 
 #### Traditional
 
 ```html
 <script src="jquery.js"></script>
-<script src="inputio.js"></script>
+<script src="fio.js"></script>
 ```
 
 ### API
 
-#### InputIO.get(selector)
+#### fio.get(selector)
 
 Gets the input value given the selector.
 
-#### InputIO.set(selector, value)
+#### fio.set(selector, value)
 
 Sets the input value for the selector.
 
-#### InputIO.coerce(value, type)
+#### fio.coerce(value, type)
 
 Coerces some value for the given type. This is generally performed after
 `getInputValue` is used.
 
-#### InputIO.check(value, type)
+#### fio.check(value, type)
 
 Validates a value is of the given type. Returns a boolean denoting the result.
 
@@ -68,7 +67,7 @@ Validates a value is of the given type. Returns a boolean denoting the result.
 ```
 
 ```javascript
-InputIO.get('[name=cbox1]'); // ['foo', 'baz']
+fio.get('[name=cbox1]'); // ['foo', 'baz']
 ```
 
 #### Multiple Inputs
@@ -79,7 +78,7 @@ InputIO.get('[name=cbox1]'); // ['foo', 'baz']
 ```
 
 ```javascript
-InputIO.get('[name=range1]'); // [1, 2]
+fio.get('[name=range1]'); // [1, 2]
 ```
 
 #### Disable Input
@@ -90,5 +89,5 @@ InputIO.get('[name=range1]'); // [1, 2]
 ```
 
 ```javascript
-InputIO.get('[name=range2]'); // 1
+fio.get('[name=range2]'); // 1
 ```
